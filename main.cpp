@@ -1,17 +1,25 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <map>
+#include <iterator>
+
 
 using namespace std;
+
 
 int main()
 {
     cout << "Welcome to the 23andme DNA comparator." << endl << endl;
     ifstream fileA ("PersonA.txt");
-    ifstream fileB ("PersonA2.txt");
+    ifstream fileB ("PersonB.txt");
 
     string strA;
     string strB;
+
+    map<string, string> m;
+
+
 
     float dataComps = 0.0;
     float dataShared = 0.0;
@@ -28,84 +36,47 @@ int main()
 
     cout << "Beginning computations..." << endl;
 
+
     fileA >> strA;
-    fileB >> strB;
-
-
-    cout << strA << " and " << strB << endl;
-
-
-/*
-    if(strA.compare(strB) == 0){
-        fileA >> strA;
-        fileB >> strB;
-        fileA >> strA;
-        fileB >> strB;
-        fileA >> strA;
-        fileB >> strB;//compare DNA
-        if(strA.compare(strB) == 0){
-            dataComps += 1;
-            dataShared += 1;
-        }else{
-            dataComps += 1;
-        }
-    }
-*/
-
-
-/*
 
     while(!(fileA.eof())){
-        reItB:
-        //cout << "Comparing " << strA << " and " << strB << endl;
-        while((strA.compare(strB) != 0) && !(fileB.eof())){
-            fileB >> strB;
-            fileB >> strB;
-            fileB >> strB;
-            fileB >> strB;
-            //cout << "Comparing " << strA << " and " << strB << endl;
-        }
-        if(fileB.eof()){
-            fileB.close();
-            ifstream fileB ("PersonB.txt");
-            fileB >> strB;
-            fileA >> strA;
-            fileA >> strA;
-            fileA >> strA;
-            fileA >> strA;
-            if(fileA.eof()){
-                goto donePoint;
-            }
-            goto reItB;
-        }
-        if(strA.compare(strB) == 0){
-            //cout << "Comparing " << strA << " and " << strB << endl;
-            fileA >> strA;
-            fileB >> strB;
-            fileA >> strA;
-            fileB >> strB;
-            fileA >> strA;
-            fileB >> strB;//compare DNA
-           // cout << "With " << strA << " and " << strB << endl;
-
-            if(strA.compare(strB) == 0){
-                dataComps += 1;
-                dataShared += 1;
-            }else{
-                dataComps += 1;
-            }
-            fileA >> strA;
-            fileB >> strB;
-        }
+        string a1 = strA;
         fileA >> strA;
         fileA >> strA;
         fileA >> strA;
+        string a2 = strA;
+        //cout << a1 << " and " << a2 << endl;
+        m.insert(pair<string, string>(a1, a2));
         fileA >> strA;
     }
 
 
-donePoint:
-    */
+
+    fileB >> strB;
+
+    std::map<string, string>::iterator it;
+
+    while(!(fileB.eof())){
+        it = m.find(strB);
+        if(it != m.end()){
+            dataComps += 1;
+            string copyStr = strB;
+            fileB >> strB;
+            fileB >> strB;
+            fileB >> strB;
+            if( strB == m.at(copyStr)){
+                dataShared += 1;
+            }
+            fileB >> strB;
+        }else{
+            fileB >> strB;
+            fileB >> strB;
+            fileB >> strB;
+            fileB >> strB;
+        }
+
+    }
+
 
     cout << endl <<"Done!" << endl << endl;
 
@@ -121,6 +92,7 @@ donePoint:
 
     fileA.close();
     fileB.close();
+
 
     return 0;
 }
